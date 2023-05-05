@@ -23,33 +23,61 @@ int main() {
     int u_axe_y = axe_y;
     int b_axe_y = axe_y + axe_length;
 
+     bool collision_with_axe =   
+                                (b_axe_y >= u_circle_y) &&
+                                (u_axe_y <= b_circle_y) &&
+                                (l_axe_x <= r_circle_x) &&
+                                (r_axe_x >= l_circle_x);
+
+
     int direction = 10;
     SetTargetFPS(60);
     while (WindowShouldClose() == false) {
         BeginDrawing();
         ClearBackground(WHITE);
 
-        // GAME LOGIC BEGINS 
-
-        DrawCircle(circle_x, circle_y, circle_radius, BLUE);
-        DrawRectangle(axe_x, axe_y, axe_length, axe_length, RED);
-
-        // MOVE AXE
-        axe_y += direction;
-        if(axe_y > height || axe_y < 0) {
-            direction *= -1;
+        if (collision_with_axe) {
+            DrawText("GAME OVER", 400, 200, 20, RED);
         }
+        else {
+            // GAME LOGIC BEGINS 
 
-        if (IsKeyDown(KEY_D) && circle_x < width) {
-            circle_x += 10;
+            // UPDATE EDGES
+            l_circle_x = circle_x - circle_radius;
+            r_circle_x = circle_x + circle_radius;
+            u_circle_y = circle_y - circle_radius;
+            b_circle_y = circle_y + circle_radius;
+
+            l_axe_x = axe_x;
+            r_axe_x = axe_x + axe_length;
+            u_axe_y = axe_y;
+            b_axe_y = axe_y + axe_length;
+
+            // UPDATE COLLISION
+            collision_with_axe =   
+                                (b_axe_y >= u_circle_y) &&
+                                (u_axe_y <= b_circle_y) &&
+                                (l_axe_x <= r_circle_x) &&
+                                (r_axe_x >= l_circle_x);
+
+            DrawCircle(circle_x, circle_y, circle_radius, BLUE);
+            DrawRectangle(axe_x, axe_y, axe_length, axe_length, RED);
+
+            // MOVE AXE
+            axe_y += direction;
+            if(axe_y > height || axe_y < 0) {
+                direction *= -1;
+            }
+
+            if (IsKeyDown(KEY_D) && circle_x < width) {
+                circle_x += 10;
+            }
+
+            if (IsKeyDown(KEY_A) && circle_x > 0) {
+                circle_x -= 10;
+            }
+            // GAME LOGIC ENDS
         }
-
-        if (IsKeyDown(KEY_A) && circle_x > 0) {
-            circle_x -= 10;
-        }
-
-        // GAME LOGIC ENDS 
-
 
         EndDrawing();
     }
